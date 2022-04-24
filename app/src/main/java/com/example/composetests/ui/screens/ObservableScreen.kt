@@ -1,5 +1,6 @@
 package com.example.composetests.ui.screens
 
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
 import androidx.compose.material.Scaffold
@@ -18,11 +19,11 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @Composable
-fun ObservableScreen(navController: NavHostController) {
+fun ObservableScreen(navController: NavHostController, viewModel: ObservableViewModel) {
     val scaffoldState = rememberScaffoldState()
     val scope = rememberCoroutineScope()
-    val viewModel = ObservableViewModel()
-    val liveDataText = viewModel.liveData.observeAsState("Hello World")
+    Log.i("LOG_TAG", "ObservableScreen: Called")
+    val liveDataText = viewModel.liveData.observeAsState()
     val stateFlowText = viewModel.stateFlow.collectAsState()
     val flowText  = viewModel.triggerFlow().collectAsState(initial = "Hello yea")
     val sharedFlowText  = viewModel.shareFlow.collectAsState(initial = "Hello blah")
@@ -37,7 +38,7 @@ fun ObservableScreen(navController: NavHostController) {
         )
         {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(text = liveDataText.value)
+                Text(text = liveDataText.value?:"")
                 Button(onClick = { viewModel.triggerLiveData() }) {
                     Text(text = "LiveData")
                 }

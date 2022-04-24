@@ -4,11 +4,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-
-class ObservableViewModel: ViewModel() {
+@HiltViewModel
+class ObservableViewModel @Inject constructor(): ViewModel() {
     private val _liveData = MutableLiveData("Hello World")
     val liveData: LiveData<String> = _liveData
 
@@ -27,6 +29,8 @@ class ObservableViewModel: ViewModel() {
     }
 
     fun triggerFlow(): Flow<String> {
+
+        //producer block
         return flow {
             repeat(5){
                 emit("Item $it")
@@ -41,6 +45,4 @@ class ObservableViewModel: ViewModel() {
             _shareFlow.emit("Shared Flow")
         }
     }
-
-
 }
