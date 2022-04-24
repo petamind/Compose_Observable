@@ -11,12 +11,15 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.navigation.NavHostController
 import com.example.composetests.viewmodel.ObservableViewModel
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @Composable
 fun ObservableScreen(navController: NavHostController, viewModel: ObservableViewModel) {
@@ -25,8 +28,9 @@ fun ObservableScreen(navController: NavHostController, viewModel: ObservableView
     Log.i("LOG_TAG", "ObservableScreen: Called")
     val liveDataText = viewModel.liveData.observeAsState()
     val stateFlowText = viewModel.stateFlow.collectAsState()
-    val flowText  = viewModel.triggerFlow().collectAsState(initial = "Hello yea")
-    val sharedFlowText  = viewModel.shareFlow.collectAsState(initial = "Hello blah")
+    val flowText =
+        viewModel.triggerFlow().collectAsState(initial = "Hello yea")
+    val sharedFlowText = viewModel.shareFlow.collectAsState(initial = "Hello blah")
     Scaffold(
         scaffoldState = scaffoldState,
         topBar = { TopBar(scope, scaffoldState = scaffoldState, "Observable") },
@@ -38,7 +42,7 @@ fun ObservableScreen(navController: NavHostController, viewModel: ObservableView
         )
         {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(text = liveDataText.value?:"")
+                Text(text = liveDataText.value ?: "")
                 Button(onClick = { viewModel.triggerLiveData() }) {
                     Text(text = "LiveData")
                 }
